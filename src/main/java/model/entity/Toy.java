@@ -10,18 +10,22 @@ public class Toy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     private double probability;
+
+    public Toy() {
+
+    }
 
     public Toy(String name, Probability probability) {
         this.name = name;
         this.probability = probability.getProbability();
     }
 
-    public Long getId() {
+    public int getId() {
         return this.id;
     }
 
@@ -41,7 +45,7 @@ public class Toy {
         this.probability = probability.getProbability();
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

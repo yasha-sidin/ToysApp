@@ -8,7 +8,10 @@ public interface iGetModel<T> {
 
     public List<T> getAllData();
 
+    public void deleteData(T data);
+
     public T getDataById(int id);
 
-    public void setData(T data);
+    public void updateData(T data);
+
 }
