@@ -87,7 +87,8 @@ public class DbModel implements iGetModel<Toy>{
         }
     }
 
-    public void shutdownSessionFabric() {
+    @Override
+    public void shutdownModel() {
         HibernateUtil.shutdown();
     }
 

@@ -14,4 +14,5 @@ public interface iGetModel<T> {
 
     public void updateData(T data);
 
+    public void shutdownModel();
 }

@@ -15,4 +15,12 @@ public class Wallet {
     public Double getMoney() {
         return this.money;
     }
+
+    public void spendMoney(Double money) {
+        money = Double.parseDouble(new BigDecimal(money, MATH_CONTEXT).toString());
+        if (this.money - money < 0.0) {
+            throw new RuntimeException("You don't have enough money in your wallet.");
+        }
+        this.money = this.money - money;
+    }
 }
