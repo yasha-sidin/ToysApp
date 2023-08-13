@@ -2,6 +2,7 @@ package model;
 
 import model.entity.Toy;
 import org.hibernate.Session;
+import toysMachineApi.ToysMachineApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,5 +25,10 @@ public class Test {
 //        List<Integer> probabilityList = new ArrayList<>();
 //        Arrays.stream(probabilityArray).parallel().forEach(probabilityList::add);
 //        probabilityList.forEach((i) -> System.out.print(probabilityList.get(i) + " "));
+        iGetModel<Toy> dbModel = new DbModel();
+        ToysMachineApi toysMachineApi = new ToysMachineApi(dbModel);
+//        toysMachineApi.addToysToStorage("Dinosour", new Probability(1.5), 10);
+        System.out.println();
+        toysMachineApi.shutDownMachine();
     }
 }
