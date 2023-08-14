@@ -22,7 +22,7 @@ public class Toy {
 
     public Toy(String name, Probability probability) {
         this.name = name;
-        this.probability = probability.getProbability();
+        this.probability = probability.getValue();
     }
 
     public int getId() {
@@ -33,8 +33,8 @@ public class Toy {
         return this.name;
     }
 
-    public double getProbability() {
-        return this.probability;
+    public Probability getProbability() {
+        return new Probability(this.probability);
     }
 
     public void setName(String name) {
@@ -42,7 +42,7 @@ public class Toy {
     }
 
     public void setProbability(Probability probability) {
-        this.probability = probability.getProbability();
+        this.probability = probability.getValue();
     }
 
     public void setId(int id) {
@@ -51,6 +51,14 @@ public class Toy {
 
     @Override
     public String toString() {
-        return "Toy{ " + "id: " + getId() + ", name: " + getName() + ", probability: " + getProbability() + " }";
+        return "Toy{ " + "id: " + getId() + ", name: " + getName() + ", probability: " + getProbability().getValue() + " }";
+    }
+
+    public String printToClient() {
+        return "Toy: " + getName();
+    }
+
+    public String printToOwner() {
+        return "Toy's name: " + getName() + "; probability: " + getProbability().getValue();
     }
 }

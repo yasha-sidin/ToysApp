@@ -6,6 +6,7 @@ import toysMachineApi.ToysMachineApi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -25,10 +26,16 @@ public class Test {
 //        List<Integer> probabilityList = new ArrayList<>();
 //        Arrays.stream(probabilityArray).parallel().forEach(probabilityList::add);
 //        probabilityList.forEach((i) -> System.out.print(probabilityList.get(i) + " "));
-        iGetModel<Toy> dbModel = new DbModel();
-        ToysMachineApi toysMachineApi = new ToysMachineApi(dbModel);
-//        toysMachineApi.addToysToStorage("Dinosour", new Probability(1.5), 10);
-        System.out.println();
-        toysMachineApi.shutDownMachine();
+//        iGetModel<Toy> dbModel = new DbModel();
+//        ToysMachineApi toysMachineApi = new ToysMachineApi(dbModel);
+////        toysMachineApi.addToysToStorage("Dinosour", new Probability(1.5), 10);
+//        System.out.println();
+//        toysMachineApi.shutDownMachine();
+//        iGetModel<Toy> dbModel = new DbModel();
+//        List<Toy> list = dbModel.getAllData();
+//        for (Toy toy: list) {
+//            dbModel.deleteData(toy);
+//        }
+//        dbModel.shutdownModel();
     }
 }
