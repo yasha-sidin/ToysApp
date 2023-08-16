@@ -16,8 +16,8 @@ public class ToysMachineApi {
     private final static Settings settings = new Settings();
     private static Money choiceCost = Settings.getChoiceSettings();
     private static int minAmountOfToys = Settings.getMinAmountSettings();
-    private static final Probability max_probability = new Probability(100.0);
-    private static final Probability current_probability = getProbFromFile();
+    private static final Probability maxProbability = new Probability(100.0);
+    private static final Probability currentProbability = getProbFromFile();
     private final iGetModel<Toy> model;
     public ToysMachineApi(iGetModel<Toy> model) {
         this.model = model;
@@ -36,14 +36,14 @@ public class ToysMachineApi {
     public void addToysToStorage(String nameOfToy, Probability probability, int amount) {
         if (amount < 1) throw new RuntimeException("Amount must be more than 0");
         if (amount * probability.getValue() +
-                current_probability.getValue() > max_probability.getValue()) {
+                currentProbability.getValue() > maxProbability.getValue()) {
             throw new RuntimeException("Result probability can't be more than 100");
         }
         for (int i = 0; i < amount; i++) {
             Toy newToy = new Toy(nameOfToy, probability);
             model.addData(newToy);
         }
-        current_probability.setProbability(current_probability.getValue() + (probability.getValue() * amount));
+        currentProbability.setProbability(currentProbability.getValue() + (probability.getValue() * amount));
         saveProbIntoFile();
     }
 
@@ -53,21 +53,20 @@ public class ToysMachineApi {
 
     public void deleteToyFromStorage(Toy toy) {
         model.deleteData(toy);
-        current_probability.setProbability(current_probability.getValue() - toy.getProbability().getValue());
+        currentProbability.setProbability(currentProbability.getValue() - toy.getProbability().getValue());
         saveProbIntoFile();
     }
 
     public void updateToyProbability(Probability probability, Toy toy) {
         Probability beforeProb = toy.getProbability();
-        if (current_probability.getValue() - beforeProb.getValue() + probability.getValue() > max_probability.getValue()) {
+        if (currentProbability.getValue() - beforeProb.getValue() + probability.getValue() > maxProbability.getValue()) {
             throw new RuntimeException("Result probability can't be more than 100");
         }
         toy.setProbability(probability);
         model.updateData(toy);
-        current_probability.setProbability(current_probability.getValue() - beforeProb.getValue() + probability.getValue());
+        currentProbability.setProbability(currentProbability.getValue() - beforeProb.getValue() + probability.getValue());
         saveProbIntoFile();
     }
-
 
     public String usePlayingChoiceAndGetInfo() {
         List<Toy> toysList = model.getAllData();
@@ -102,7 +101,7 @@ public class ToysMachineApi {
             return "Unfortunately, you didn't win anything. Don't worry, maybe next time you will be more lucky.";
         } else {
             Toy prize = toysMap.get(selectedKey);
-            current_probability.setProbability(current_probability.getValue() - prize.getProbability().getValue());
+            currentProbability.setProbability(currentProbability.getValue() - prize.getProbability().getValue());
             saveProbIntoFile();
             prizesQueue.add(prize);
             return String.format("Congratulates you! You won a prize: %s", prize.getName());
@@ -128,6 +127,18 @@ public class ToysMachineApi {
 
     public List<Toy> getAllToys() {
         return model.getAllData();
+    }
+
+    public Probability getCurrentProbability() {
+        return currentProbability;
+    }
+
+    public Money getChoiceCost() {
+        return choiceCost;
+    }
+
+    public int getMinAmountOfToys() {
+        return minAmountOfToys;
     }
 
     public void shutDownMachine() {
@@ -206,7 +217,7 @@ public class ToysMachineApi {
 
     private static void saveProbIntoFile() {
         try (FileWriter fw = new FileWriter(PATH_TO_PROB_FILE, false)) {
-            fw.write(String.valueOf(current_probability.getValue()));
+            fw.write(String.valueOf(currentProbability.getValue()));
         } catch (Throwable ex) {
             System.err.println("Exception in saving current_prob to src/main/resources/prob_file.txt. " + ex);
         }
@@ -256,7 +267,7 @@ public class ToysMachineApi {
 
         private static void initDefaultSettings() {
             try (FileWriter fw = new FileWriter(PATH_SETTINGS, false)) {
-                fw.write(DEFAULT_CHOICE_COST + "\n" + DEFAULT_MIN_AMOUNT);
+                fw.write(DEFAULT_CHOICE_COST.getValue() + "\n" + DEFAULT_MIN_AMOUNT);
             } catch (Throwable ex) {
                 System.err.println("Exception in initializing src/main/resources/settings.txt. " + ex);
             }
