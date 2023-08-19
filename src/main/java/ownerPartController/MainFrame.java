@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MainFrame extends JFrame {
-    private final Font textAreaFont = new Font("Times New Roman", Font.PLAIN, 14);
-    private final Font labelFont = new Font("Times New Roman", Font.PLAIN, 18);
-    private final Font buttonFont = new Font("Times New Roman", Font.PLAIN, 18);
+    private final Font textAreaFont = new Font("Times New Roman", Font.BOLD, 14);
+    private final Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
+    private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 18);
     private JLabel paramsLabel;
     private JTextArea allToys;
     private JButton addButton;
@@ -65,9 +65,9 @@ public class MainFrame extends JFrame {
         infoPanel.setBackground(new Color(229, 216, 216));
         allToys = new JTextArea();
         allToys.setFont(textAreaFont);
-        allToys.setEditable(true);
+        allToys.setEditable(false);
         allToys.setText(getToysList());
-        allToys.setRows(40);
+        allToys.setRows(44);
         allToys.setColumns(65);
         allToys.setBackground(new Color(240, 243, 252));
         scrollPane = new JScrollPane(allToys, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -130,6 +130,11 @@ public class MainFrame extends JFrame {
             stringBuilder.append(key).append(". ").append(toysMap.get(key).printToOwner()).append("\n");
         }
         return stringBuilder.toString();
+    }
+
+    public void refreshData() {
+        paramsLabel.setText(getSensitiveData());
+        allToys.setText(getToysList());
     }
 
     private String getSensitiveData() {
