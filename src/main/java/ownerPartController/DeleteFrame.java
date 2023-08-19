@@ -1,12 +1,10 @@
-package clientPartController;
-
-import ownerPartController.MainFrame;
+package ownerPartController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class SettingsFrame extends JFrame {
+public class DeleteFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
@@ -18,7 +16,7 @@ public class SettingsFrame extends JFrame {
 //        initialize();
 //    }
 
-    public SettingsFrame() {
+    public DeleteFrame() {
         initialize();
     }
 
@@ -45,54 +43,37 @@ public class SettingsFrame extends JFrame {
         infoLabel.setFont(labelFont);
         infoLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         infoLabel.setBackground(new Color(229, 216, 216));
-        infoLabel.setText("<html><h2><center>Instruction</center></h2><p> &nbsp  &nbsp  &nbsp Please fill params of settings in the fields." +
-                " (Cost of one choice in toys machine, minimum amount of toys in toys machine which need to be in that to continue playing).</p></html>");
+        infoLabel.setText("<html><h2><center>Instruction</center></h2><p> &nbsp  &nbsp  &nbsp Please fill number of toy from list which instance " +
+                "of you need to delete.</p></html>");
 
         JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new GridLayout(3, 1, 25, 25));
         fieldsPanel.setBackground(new Color(229, 216, 216));
 
+        JPanel fieldToyNumber = new JPanel();
+        fieldToyNumber.setLayout(new BoxLayout(fieldToyNumber, BoxLayout.X_AXIS));
+        fieldToyNumber.setBackground(new Color(229, 216, 216));
+        JLabel toyNumber = new JLabel();
+        toyNumber.setFont(labelFont);
+        toyNumber.setText("Toy's number: ");
+        toyNumber.setBackground(new Color(229, 216, 216));
+        JTextField toyField = new JTextField();
+        toyField.setFont(textFieldFont);
+        toyField.setBackground(new Color(240, 243, 252));
+        toyField.setColumns(20);
+        fieldToyNumber.add(toyNumber);
+        fieldToyNumber.add(toyField);
 
-        JPanel fillChoiceCost = new JPanel();
-        fillChoiceCost.setLayout(new BoxLayout(fillChoiceCost, BoxLayout.X_AXIS));
-        fillChoiceCost.setBackground(new Color(229, 216, 216));
-        JLabel cost = new JLabel();
-        cost.setFont(labelFont);
-        cost.setText("Choice cost:  ");
-        cost.setBackground(new Color(229, 216, 216));
-        JTextField costField = new JTextField();
-        costField.setFont(textFieldFont);
-        costField.setBackground(new Color(240, 243, 252));
-        costField.setColumns(20);
-        fillChoiceCost.add(cost);
-        fillChoiceCost.add(costField);
-
-        JPanel fillMinToys = new JPanel();
-        fillMinToys.setLayout(new BoxLayout(fillMinToys, BoxLayout.LINE_AXIS));
-        fillMinToys.setBackground(new Color(229, 216, 216));
-        JLabel minToys = new JLabel();
-        minToys.setFont(labelFont);
-        minToys.setText("Min amount : ");
-        minToys.setBackground(new Color(229, 216, 216));
-        JTextField minField = new JTextField();
-        minField.setFont(textFieldFont);
-        minField.setBackground(new Color(240, 243, 252));
-        minField.setColumns(20);
-        fillMinToys.add(minToys);
-        fillMinToys.add(minField);
-
-        fieldsPanel.add(fillChoiceCost);
-        fieldsPanel.add(fillMinToys);
+        fieldsPanel.add(fieldToyNumber);
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(new Color(229, 216, 216));
         Box box = new Box(BoxLayout.X_AXIS);
         box.setBackground(new Color(229, 216, 216));
-        JButton buttonSave = new JButton("Save");
-        buttonSave.setFont(buttonFont);
+        JButton buttonDelete = new JButton("Delete");
+        buttonDelete.setFont(buttonFont);
         JButton buttonCancel = new JButton("Cancel");
         buttonCancel.setFont(buttonFont);
-        box.add(buttonSave);
+        box.add(buttonDelete);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(buttonCancel);
         buttonsPanel.add(box);
@@ -110,6 +91,6 @@ public class SettingsFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        var frame = new SettingsFrame();
+        var frame = new DeleteFrame();
     }
 }
