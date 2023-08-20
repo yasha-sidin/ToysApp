@@ -8,12 +8,7 @@ import toysMachineApi.ToysMachineApi;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -27,7 +22,7 @@ public class MainFrame extends JFrame {
     private JButton settingsButton;
     private JButton updateProbabilityButton;
     private JButton deleteButton;
-    private static HashMap<Integer, Toy> toysMap;
+    private static HashMap<Integer, Toy> toysMap = new HashMap<>();
     private JScrollPane scrollPane;
     private final ToysMachineApi toysMachineApi;
 
@@ -79,12 +74,16 @@ public class MainFrame extends JFrame {
         Box box = new Box(BoxLayout.X_AXIS);
         addButton = new JButton("Add");
         addButton.setFont(buttonFont);
+        addButton.addActionListener(e -> new AddFrame(this));
         settingsButton = new JButton("Settings");
         settingsButton.setFont(buttonFont);
+        settingsButton.addActionListener(e -> new SettingsFrame(this));
         updateProbabilityButton = new JButton("Update Toy");
         updateProbabilityButton.setFont(buttonFont);
+        updateProbabilityButton.addActionListener(e -> new UpdateFrame(this));
         deleteButton = new JButton("Delete");
         deleteButton.setFont(buttonFont);
+        deleteButton.addActionListener(e -> new DeleteFrame(this));
         box.add(addButton);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(settingsButton);
@@ -93,8 +92,6 @@ public class MainFrame extends JFrame {
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(deleteButton);
         buttonsPanel.add(box);
-
-
 
 
 
@@ -115,7 +112,7 @@ public class MainFrame extends JFrame {
             toysMap.clear();
         }
         List<Toy> toysList = toysMachineApi.getAllToys();
-        for (int i = 1; i < toysList.size(); i++) {
+        for (int i = 1; i <= toysList.size(); i++) {
             toysMap.put(i, toysList.get(i - 1));
         }
     }
@@ -146,8 +143,21 @@ public class MainFrame extends JFrame {
                      .append(toysMachineApi.getMinAmountOfToys())
                      .append(", choice's cost: ")
                      .append(toysMachineApi.getChoiceCost().getValue())
+                     .append(toysMachineApi.getChoiceCost().getCurrencyChar())
                      .append(" }");
         return stringBuilder.toString();
+    }
+
+    public Toy getToyByNumber(int number) {
+        return toysMap.get(number);
+    }
+
+    public HashMap<Integer, Toy> getToysMap() {
+        return toysMap;
+    }
+
+    public ToysMachineApi getToysMachineApi() {
+        return toysMachineApi;
     }
     public static void main(String[] args) {
         MainFrame mainFrame = new MainFrame(new DbModel());

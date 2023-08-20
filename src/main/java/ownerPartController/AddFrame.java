@@ -1,8 +1,14 @@
 package ownerPartController;
 
+import model.Probability;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class AddFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
@@ -11,17 +17,13 @@ public class AddFrame extends JFrame {
 
     private MainFrame father;
 
-//    public AddFrame(MainFrame father) {
-//        this.father = father;
-//        initialize();
-//    }
-
-    public AddFrame() {
+    public AddFrame(MainFrame father) {
+        this.father = father;
         initialize();
     }
 
     private void initialize() {
-//        father.setEnabled(false);
+        father.setEnabled(false);
         setTitle("Add toys");
         setResizable(false);
         setMinimumSize(new Dimension(500, 400));
@@ -103,7 +105,34 @@ public class AddFrame extends JFrame {
         box.setBackground(new Color(229, 216, 216));
         JButton buttonAdd = new JButton("Add");
         buttonAdd.setFont(buttonFont);
+        buttonAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toyField.getText().isEmpty() || probField.getText().isEmpty() || countField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(externalPanel, "Please fill all fields.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                try {
+                    String toyName = toyField.getText();
+                    Probability probability = new Probability(Double.parseDouble(probField.getText()));
+                    int count = Integer.parseInt(countField.getText());
+                    father.getToysMachineApi().addToysToStorage(toyName, probability, count);
+                    father.setEnabled(true);
+                    father.refreshData();
+                    setVisible(false);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(externalPanel, "<html> " + ex.getMessage() + "</html>", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         JButton buttonCancel = new JButton("Cancel");
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
         buttonCancel.setFont(buttonFont);
         box.add(buttonAdd);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
@@ -118,11 +147,15 @@ public class AddFrame extends JFrame {
 
         add(externalPanel);
         setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
 
-    }
-
-    public static void main(String[] args) {
-        var frame = new AddFrame();
     }
 }

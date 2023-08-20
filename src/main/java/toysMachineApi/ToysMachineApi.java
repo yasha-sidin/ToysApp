@@ -108,9 +108,10 @@ public class ToysMachineApi {
         }
     }
 
-    public Toy getPrizeFromQueue() {
+    public Toy getPrizeFromQueue() throws IOException {
         Toy prize = prizesQueue.peek();
         if (prize != null) {
+            saveToyToFile(prize);
             model.deleteData(prize);
             prizesQueue.remove(prize);
         }
@@ -146,6 +147,8 @@ public class ToysMachineApi {
     }
 
     public boolean setSettings(Money choiceCosts, int minAmountToys) {
+        if (choiceCosts.getValue() > 1000.0) throw new RuntimeException("Cost of one choice can't be less than 1000.");
+        if (minAmountToys <= 0 || minAmountToys > 30) throw new RuntimeException("Minimum amount of toys can't be less 0 or equals that and more than 30.");
         boolean result = Settings.saveSettings(choiceCosts, minAmountToys);
         choiceCost = choiceCosts;
         minAmountOfToys = minAmountToys;
@@ -153,30 +156,30 @@ public class ToysMachineApi {
     }
 
     public boolean setSettings(Money choiceCosts) {
+        if (choiceCosts.getValue() > 1000.0) throw new RuntimeException("Cost of one choice can't be less than 1000.");
         boolean result = Settings.saveSettings(choiceCosts);
         choiceCost = choiceCosts;
         return result;
     }
 
     public boolean setSettings(int minAmountToys) {
+        if (minAmountToys <= 0 || minAmountToys > 30) throw new RuntimeException("Minimum amount of toys can't be less 0 or equals that and more than 30.");
         boolean result = Settings.saveSettings(minAmountToys);
         minAmountOfToys = minAmountToys;
         return result;
     }
 
-    private boolean saveToyToFile(Toy toy) throws IOException {
-        File file = new File(PATH_TOYS_CLIENT);
-        if (!file.exists()){
-            file.createNewFile();
-        }
+    private void saveToyToFile(Toy toy) throws IOException {
+//        File file = new File(PATH_TOYS_CLIENT);
+//        if (!file.exists()){
+//            file.createNewFile();
+//        }
         int current_number = getLastNumber();
         try (FileWriter fw = new FileWriter(PATH_TOYS_CLIENT, true)) {
             fw.write(getLastNumber() + ". " + toy.printToClient());
-            return true;
         } catch (Throwable ex) {
             System.err.println("Exception in saving client's toy to src/main/resources/client_toys.txt. " + ex);
         }
-        return false;
     }
 
     private int getLastNumber() {
@@ -266,6 +269,10 @@ public class ToysMachineApi {
         }
 
         private static void initDefaultSettings() {
+            File file = new File(PATH_SETTINGS);
+            if (file.exists()) {
+                return;
+            }
             try (FileWriter fw = new FileWriter(PATH_SETTINGS, false)) {
                 fw.write(DEFAULT_CHOICE_COST.getValue() + "\n" + DEFAULT_MIN_AMOUNT);
             } catch (Throwable ex) {

@@ -1,8 +1,15 @@
 package ownerPartController;
 
+import model.Probability;
+import model.entity.Toy;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class UpdateFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
@@ -11,18 +18,13 @@ public class UpdateFrame extends JFrame {
 
     private MainFrame father;
 
-//    public AddFrame(MainFrame father) {
-//        this.father = father;
-//        initialize();
-//    }
-
-    public UpdateFrame() {
+    public UpdateFrame(MainFrame father) {
+        this.father = father;
         initialize();
     }
-
     private void initialize() {
-//        father.setEnabled(false);
-        setTitle("Add toys");
+        father.setEnabled(false);
+        setTitle("Update toy");
         setResizable(false);
         setMinimumSize(new Dimension(500, 400));
         setMaximumSize(new Dimension(500, 400));
@@ -58,12 +60,12 @@ public class UpdateFrame extends JFrame {
         numberToy.setFont(labelFont);
         numberToy.setText("Toy's number: ");
         numberToy.setBackground(new Color(229, 216, 216));
-        JTextField countField = new JTextField();
-        countField.setFont(textFieldFont);
-        countField.setBackground(new Color(240, 243, 252));
-        countField.setColumns(20);
+        JTextField numberField = new JTextField();
+        numberField.setFont(textFieldFont);
+        numberField.setBackground(new Color(240, 243, 252));
+        numberField.setColumns(20);
         toyNumberPanel.add(numberToy);
-        toyNumberPanel.add(countField);
+        toyNumberPanel.add(numberField);
 
         JPanel fieldsElementToy = new JPanel();
         fieldsElementToy.setLayout(new BoxLayout(fieldsElementToy, BoxLayout.X_AXIS));
@@ -103,7 +105,39 @@ public class UpdateFrame extends JFrame {
         box.setBackground(new Color(229, 216, 216));
         JButton buttonUpdate = new JButton("Update");
         buttonUpdate.setFont(buttonFont);
+        buttonUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (numberField.getText().isEmpty() || probField.getText().isEmpty() || toyField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(externalPanel, "Please fill all fields.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                if (!father.getToysMap().containsKey(Integer.parseInt(numberField.getText()))) {
+                    JOptionPane.showMessageDialog(externalPanel, "This number doesn't exist.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    Toy toy = father.getToyByNumber(Integer.parseInt(numberField.getText()));
+                    String toyName = toyField.getText();
+                    Probability probability = new Probability(Double.parseDouble(probField.getText()));
+                    toy.setName(toyName);
+                    father.getToysMachineApi().updateToyProbability(probability, toy);
+                    father.setEnabled(true);
+                    father.refreshData();
+                    setVisible(false);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(externalPanel, "<html> " + ex.getMessage() + "</html>", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         JButton buttonCancel = new JButton("Cancel");
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
         buttonCancel.setFont(buttonFont);
         box.add(buttonUpdate);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
@@ -118,11 +152,16 @@ public class UpdateFrame extends JFrame {
 
         add(externalPanel);
         setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
 
     }
 
-    public static void main(String[] args) {
-        var frame = new UpdateFrame();
-    }
 }

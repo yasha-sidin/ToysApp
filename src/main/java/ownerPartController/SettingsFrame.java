@@ -1,28 +1,30 @@
 package ownerPartController;
 
+import model.Probability;
+import toysMachineApi.Money;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class SettingsFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
-
     private MainFrame father;
 
-//    public AddFrame(MainFrame father) {
-//        this.father = father;
-//        initialize();
-//    }
-
-    public SettingsFrame() {
+    public SettingsFrame(MainFrame father) {
+        this.father = father;
         initialize();
     }
 
     private void initialize() {
-//        father.setEnabled(false);
-        setTitle("Add toys");
+        father.setEnabled(false);
+        setTitle("Settings");
         setResizable(false);
         setMinimumSize(new Dimension(500, 400));
         setMaximumSize(new Dimension(500, 400));
@@ -88,8 +90,34 @@ public class SettingsFrame extends JFrame {
         box.setBackground(new Color(229, 216, 216));
         JButton buttonSave = new JButton("Save");
         buttonSave.setFont(buttonFont);
+        buttonSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (minField.getText().isEmpty() || costField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(externalPanel, "Please fill all fields.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                try {
+                    Money money = new Money(Double.parseDouble(costField.getText()));
+                    int minAmount = Integer.parseInt(minField.getText());
+                    father.getToysMachineApi().setSettings(money, minAmount);
+                    father.setEnabled(true);
+                    father.refreshData();
+                    setVisible(false);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(externalPanel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         JButton buttonCancel = new JButton("Cancel");
         buttonCancel.setFont(buttonFont);
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
         box.add(buttonSave);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(buttonCancel);
@@ -103,11 +131,14 @@ public class SettingsFrame extends JFrame {
 
         add(externalPanel);
         setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-    }
-
-    public static void main(String[] args) {
-        var frame = new SettingsFrame();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
     }
 }

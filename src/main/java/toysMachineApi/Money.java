@@ -20,6 +20,9 @@ public class Money {
     }
 
     public Money(double value) {
+        if (value < 0.0) {
+            throw new RuntimeException("Money can't be less than 0.");
+        }
         this.value = Double.parseDouble(new BigDecimal(value, MATH_CONTEXT).toString());
         this.currencyChar = '$';
         this.currency = "Dollar";

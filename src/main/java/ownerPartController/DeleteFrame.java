@@ -1,8 +1,14 @@
 package ownerPartController;
 
+import model.Probability;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class DeleteFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
@@ -11,18 +17,14 @@ public class DeleteFrame extends JFrame {
 
     private MainFrame father;
 
-//    public AddFrame(MainFrame father) {
-//        this.father = father;
-//        initialize();
-//    }
-
-    public DeleteFrame() {
+    public DeleteFrame(MainFrame father) {
+        this.father = father;
         initialize();
     }
 
     private void initialize() {
-//        father.setEnabled(false);
-        setTitle("Add toys");
+        father.setEnabled(false);
+        setTitle("Delete toy");
         setResizable(false);
         setMinimumSize(new Dimension(500, 400));
         setMaximumSize(new Dimension(500, 400));
@@ -70,9 +72,37 @@ public class DeleteFrame extends JFrame {
         Box box = new Box(BoxLayout.X_AXIS);
         box.setBackground(new Color(229, 216, 216));
         JButton buttonDelete = new JButton("Delete");
+        buttonDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (toyField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(externalPanel, "Please fill field.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return;
+                }
+                if (!father.getToysMap().containsKey(Integer.parseInt(toyField.getText()))) {
+                    JOptionPane.showMessageDialog(externalPanel, "This number doesn't exist.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                try {
+                    father.getToysMachineApi().deleteToyFromStorage(father.getToyByNumber(Integer.parseInt(toyField.getText())));
+                    father.setEnabled(true);
+                    father.refreshData();
+                    setVisible(false);
+                } catch (Throwable ex) {
+                    JOptionPane.showMessageDialog(externalPanel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         buttonDelete.setFont(buttonFont);
         JButton buttonCancel = new JButton("Cancel");
         buttonCancel.setFont(buttonFont);
+        buttonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
         box.add(buttonDelete);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(buttonCancel);
@@ -86,11 +116,14 @@ public class DeleteFrame extends JFrame {
 
         add(externalPanel);
         setVisible(true);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-    }
-
-    public static void main(String[] args) {
-        var frame = new DeleteFrame();
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                setVisible(false);
+                father.setEnabled(true);
+            }
+        });
     }
 }
