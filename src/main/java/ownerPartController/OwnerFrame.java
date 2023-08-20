@@ -5,14 +5,13 @@ import model.entity.Toy;
 import model.iGetModel;
 import toysMachineApi.ToysMachineApi;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainFrame extends JFrame {
+public class OwnerFrame extends JFrame {
     private final Font textAreaFont = new Font("Times New Roman", Font.BOLD, 14);
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 18);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 18);
@@ -26,7 +25,7 @@ public class MainFrame extends JFrame {
     private JScrollPane scrollPane;
     private final ToysMachineApi toysMachineApi;
 
-    public MainFrame(iGetModel<Toy> model) {
+    public OwnerFrame(iGetModel<Toy> model) {
         this.toysMachineApi = new ToysMachineApi(model);
         initialize();
     }
@@ -158,9 +157,6 @@ public class MainFrame extends JFrame {
 
     public ToysMachineApi getToysMachineApi() {
         return toysMachineApi;
-    }
-    public static void main(String[] args) {
-        MainFrame mainFrame = new MainFrame(new DbModel());
     }
 }
 

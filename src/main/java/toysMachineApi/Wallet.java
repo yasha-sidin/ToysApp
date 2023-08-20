@@ -8,6 +8,10 @@ public class Wallet {
 
     private Money balance;
 
+    public Wallet() {
+        this.balance = new Money(0.0);
+    }
+
     public void addMoney(Money money) {
         this.balance.setValue(money.getValue() + this.balance.getValue());
     }

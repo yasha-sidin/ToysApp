@@ -1,7 +1,5 @@
 package ownerPartController;
 
-import model.Probability;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -15,9 +13,9 @@ public class DeleteFrame extends JFrame {
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
 
-    private MainFrame father;
+    private OwnerFrame father;
 
-    public DeleteFrame(MainFrame father) {
+    public DeleteFrame(OwnerFrame father) {
         this.father = father;
         initialize();
     }

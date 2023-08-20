@@ -1,4 +1,4 @@
-package ownerPartController;
+package clientPartController;
 
 import toysMachineApi.Money;
 
@@ -10,20 +10,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class SettingsFrame extends JFrame {
+public class MoneyFrame extends JFrame {
     private final Font textFieldFont = new Font("Times New Roman", Font.BOLD, 16);
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
-    private OwnerFrame father;
 
-    public SettingsFrame(OwnerFrame father) {
+    private ClientFrame father;
+
+    public MoneyFrame(ClientFrame father) {
         this.father = father;
         initialize();
     }
 
     private void initialize() {
         father.setEnabled(false);
-        setTitle("Settings");
+        setTitle("Add money");
         setResizable(false);
         setMinimumSize(new Dimension(500, 400));
         setMaximumSize(new Dimension(500, 400));
@@ -44,70 +45,51 @@ public class SettingsFrame extends JFrame {
         infoLabel.setFont(labelFont);
         infoLabel.setHorizontalTextPosition(SwingConstants.LEFT);
         infoLabel.setBackground(new Color(229, 216, 216));
-        infoLabel.setText("<html><h2><center>Instruction</center></h2><p> &nbsp  &nbsp  &nbsp Please fill params of settings in the fields." +
-                " (Cost of one choice in toys machine, minimum amount of toys in toys machine which need to be in that to continue playing).</p></html>");
+        infoLabel.setText("<html><h2><center>Instruction</center></h2><p> &nbsp  &nbsp  &nbsp Please fill value of " +
+                "money which you want to add into Toys Machine.</p></html>");
 
         JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new GridLayout(3, 1, 25, 25));
         fieldsPanel.setBackground(new Color(229, 216, 216));
 
+        JPanel moneyPanel = new JPanel();
+        moneyPanel.setLayout(new BoxLayout(moneyPanel, BoxLayout.X_AXIS));
+        moneyPanel.setBackground(new Color(229, 216, 216));
+        JLabel moneyLabel = new JLabel();
+        moneyLabel.setFont(labelFont);
+        moneyLabel.setText("Add money: ");
+        moneyLabel.setBackground(new Color(229, 216, 216));
+        JTextField moneyField = new JTextField();
+        moneyField.setFont(textFieldFont);
+        moneyField.setBackground(new Color(240, 243, 252));
+        moneyField.setColumns(20);
+        moneyPanel.add(moneyLabel);
+        moneyPanel.add(moneyField);
 
-        JPanel fillChoiceCost = new JPanel();
-        fillChoiceCost.setLayout(new BoxLayout(fillChoiceCost, BoxLayout.X_AXIS));
-        fillChoiceCost.setBackground(new Color(229, 216, 216));
-        JLabel cost = new JLabel();
-        cost.setFont(labelFont);
-        cost.setText("Choice cost:  ");
-        cost.setBackground(new Color(229, 216, 216));
-        JTextField costField = new JTextField();
-        costField.setFont(textFieldFont);
-        costField.setBackground(new Color(240, 243, 252));
-        costField.setColumns(20);
-        fillChoiceCost.add(cost);
-        fillChoiceCost.add(costField);
-
-        JPanel fillMinToys = new JPanel();
-        fillMinToys.setLayout(new BoxLayout(fillMinToys, BoxLayout.LINE_AXIS));
-        fillMinToys.setBackground(new Color(229, 216, 216));
-        JLabel minToys = new JLabel();
-        minToys.setFont(labelFont);
-        minToys.setText("Min amount : ");
-        minToys.setBackground(new Color(229, 216, 216));
-        JTextField minField = new JTextField();
-        minField.setFont(textFieldFont);
-        minField.setBackground(new Color(240, 243, 252));
-        minField.setColumns(20);
-        fillMinToys.add(minToys);
-        fillMinToys.add(minField);
-
-        fieldsPanel.add(fillChoiceCost);
-        fieldsPanel.add(fillMinToys);
+        fieldsPanel.add(moneyPanel);
 
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setBackground(new Color(229, 216, 216));
         Box box = new Box(BoxLayout.X_AXIS);
         box.setBackground(new Color(229, 216, 216));
-        JButton buttonSave = new JButton("Save");
-        buttonSave.setFont(buttonFont);
-        buttonSave.addActionListener(new ActionListener() {
+        JButton addMoneyButton = new JButton("Add money");
+        addMoneyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (minField.getText().isEmpty() || costField.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(externalPanel, "Please fill all fields.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                if (moneyField.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(externalPanel, "Please fill field.", "Info", JOptionPane.INFORMATION_MESSAGE);
                     return;
                 }
                 try {
-                    Money money = new Money(Double.parseDouble(costField.getText()));
-                    int minAmount = Integer.parseInt(minField.getText());
-                    father.getToysMachineApi().setSettings(money, minAmount);
+                    father.getToysMachineApi().addMoneyToWallet(new Money(Double.parseDouble(moneyField.getText())));
                     father.setEnabled(true);
                     father.refreshData();
                     setVisible(false);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(externalPanel, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (Throwable ex) {
+                    JOptionPane.showMessageDialog(externalPanel, "<html>" + ex.getMessage() + "</html>", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+        addMoneyButton.setFont(buttonFont);
         JButton buttonCancel = new JButton("Cancel");
         buttonCancel.setFont(buttonFont);
         buttonCancel.addActionListener(new ActionListener() {
@@ -117,7 +99,7 @@ public class SettingsFrame extends JFrame {
                 father.setEnabled(true);
             }
         });
-        box.add(buttonSave);
+        box.add(addMoneyButton);
         box.add(Box.createRigidArea(new Dimension(60, 0)));
         box.add(buttonCancel);
         buttonsPanel.add(box);

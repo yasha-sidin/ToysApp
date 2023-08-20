@@ -4,7 +4,10 @@ import model.Probability;
 import model.entity.Toy;
 import model.iGetModel;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ToysMachineApi {
@@ -23,7 +26,17 @@ public class ToysMachineApi {
         this.model = model;
     }
 
+    public boolean checkMinAmount() {
+        return model.getAllData().size() >= minAmountOfToys;
+    }
+
     public void addMoneyToWallet(Money money) {
+        if (money.getValue() > 1000) {
+            throw new RuntimeException("You can't add more than 1000 into Toy machine.");
+        }
+        if (wallet.getMoney().getValue() + money.getValue() > 10000) {
+            throw new RuntimeException("Can't be more than 10000 on your wallet");
+        }
         wallet.addMoney(money);
     }
 
@@ -85,32 +98,40 @@ public class ToysMachineApi {
         for (int i = 1; i < toysList.size(); i++) {
             double probabilityDouble = toysList.get(i - 1).getProbability().getValue();
             toysMap.put(i, toysList.get(i - 1));
-            int valueToFillProbArray = Integer.parseInt(String.valueOf(probabilityDouble * 10));
+            int valueToFillProbArray = Integer.parseInt(String.valueOf(probabilityDouble * 10).split("\\.")[0]);
             for (int j = 0; j < valueToFillProbArray; j++) {
                 probabilityArray[probCurrentPosition] = i;
                 probCurrentPosition++;
             }
         }
         List<Integer> probabilityList = new LinkedList<>();
-        Arrays.stream(probabilityArray).parallel().forEach(probabilityList::add);
+        Arrays.stream(probabilityArray).forEach(probabilityList::add);
         Collections.shuffle(probabilityList);
         Random random = new Random();
-        int randomSelect = random.nextInt(0, 1001);
+        int randomSelect = random.nextInt(0, 1000);
         int selectedKey = probabilityList.get(randomSelect);
         if (selectedKey == 0) {
             return "Unfortunately, you didn't win anything. Don't worry, maybe next time you will be more lucky.";
         } else {
             Toy prize = toysMap.get(selectedKey);
-            currentProbability.setProbability(currentProbability.getValue() - prize.getProbability().getValue());
-            saveProbIntoFile();
             prizesQueue.add(prize);
             return String.format("Congratulates you! You won a prize: %s", prize.getName());
         }
     }
 
+    public String getClientPrizes() throws IOException {
+        File file = new File(PATH_TOYS_CLIENT);
+        if (!file.exists()) {
+            return "";
+        }
+         return Files.readString(Path.of(PATH_TOYS_CLIENT));
+    }
+
     public Toy getPrizeFromQueue() throws IOException {
         Toy prize = prizesQueue.peek();
         if (prize != null) {
+            currentProbability.setProbability(currentProbability.getValue() - prize.getProbability().getValue());
+            saveProbIntoFile();
             saveToyToFile(prize);
             model.deleteData(prize);
             prizesQueue.remove(prize);
@@ -170,13 +191,9 @@ public class ToysMachineApi {
     }
 
     private void saveToyToFile(Toy toy) throws IOException {
-//        File file = new File(PATH_TOYS_CLIENT);
-//        if (!file.exists()){
-//            file.createNewFile();
-//        }
-        int current_number = getLastNumber();
+        int current_number = getLastNumber() + 1;
         try (FileWriter fw = new FileWriter(PATH_TOYS_CLIENT, true)) {
-            fw.write(getLastNumber() + ". " + toy.printToClient());
+            fw.write(current_number + ". " + toy.printToClient() + "\n");
         } catch (Throwable ex) {
             System.err.println("Exception in saving client's toy to src/main/resources/client_toys.txt. " + ex);
         }
@@ -184,22 +201,17 @@ public class ToysMachineApi {
 
     private int getLastNumber() {
         try {
-            FileReader fr = new FileReader(PATH_TOYS_CLIENT);
-            BufferedReader reader = new BufferedReader(fr);
-            String line = reader.readLine();
-            if (line == null) {
-                return 0;
+            File file = new File(PATH_TOYS_CLIENT);
+            if (!file.exists()) {
+                return 1;
             }
-            List<String> strings = new LinkedList<>();
-            while (line != null) {
-                strings.add(line);
-                line = reader.readLine();
-            }
-            return Integer.parseInt(strings.get(strings.size() - 1).split(" ")[0].substring(0, strings.get(strings.size() - 1).split(" ")[0].length() - 2));
+            String[] strings = Files.readString(Path.of(PATH_TOYS_CLIENT)).split("\n");
+            String lastRow = strings[strings.length - 1];
+            return Integer.parseInt(lastRow.split("\\.")[0]);
         } catch (Throwable ex) {
             System.err.println("Exception in finding last number of Toy from client list. Check src/main/resources/client_toys.txt. " + ex);
         }
-        return 0;
+        return 1;
     }
 
     private static Probability getProbFromFile() {

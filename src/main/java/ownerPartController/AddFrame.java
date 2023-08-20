@@ -15,9 +15,9 @@ public class AddFrame extends JFrame {
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
 
-    private MainFrame father;
+    private OwnerFrame father;
 
-    public AddFrame(MainFrame father) {
+    public AddFrame(OwnerFrame father) {
         this.father = father;
         initialize();
     }

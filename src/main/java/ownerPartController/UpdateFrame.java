@@ -16,9 +16,9 @@ public class UpdateFrame extends JFrame {
     private final Font labelFont = new Font("Times New Roman", Font.BOLD, 15);
     private final Font buttonFont = new Font("Times New Roman", Font.BOLD, 15);
 
-    private MainFrame father;
+    private OwnerFrame father;
 
-    public UpdateFrame(MainFrame father) {
+    public UpdateFrame(OwnerFrame father) {
         this.father = father;
         initialize();
     }

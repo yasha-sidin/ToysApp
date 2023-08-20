@@ -1,12 +1,13 @@
 package model.entity;
 
 import model.Probability;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "toysapp", schema = "public", catalog = "postgres")
-public class Toy {
+public class Toy implements Comparable<Toy> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,5 +61,13 @@ public class Toy {
 
     public String printToOwner() {
         return "Toy's name: " + getName() + "; probability: " + getProbability().getValue();
+    }
+
+    @Override
+    public int compareTo(@NotNull Toy other) {
+        if (this.name.compareTo(other.getName()) > 0) {
+            return 1;
+        }
+        return 0;
     }
 }
