@@ -30,7 +30,7 @@ You need to use dependencies from pom.xml in this repo and install this tool bef
 
 In this project I use only java as a programming language, hibernate framework for work with database postgresql, log4j for logging connection to database, java swing framework for GUI.
 
-Also, you need to make database toysdb using postgresql and create a new user in postgres-server, give him all privileges for this new db, or you can use main postgres user. After that create new table in db executing this script:
+Also, you need to make database toysdb using postgresql and create a new user in postgres-server, give him all privileges for this new db, or you can use root postgres user. After that create new table in db executing this script:
 ````
 CREATE TABLE IF NOT EXISTS public.toysapp
 (
@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS public.toysapp
     CONSTRAINT toysapp_pkey PRIMARY KEY (id)
 )
 ````
+After that if you didn't use root user postgre give your created user all privileges for this table.
+
 Pay attention to directory 'resources'. You can see hibernate.cfg.xml and
 log4j.properties files where. These files help to working hibernate framework using logging.
 You need to fill special params in hibernate.cfg.xml for working your app. They are database where you execute script: toysdb, user: ex. postgres,
