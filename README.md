@@ -28,7 +28,7 @@ You need to use dependencies from pom.xml in this repo and install this tool bef
 1. Postgresql
    * https://www.postgresql.org/download/
 
-In this project I use only java as a programming language, hibernate framework for work with database postgresql, log4j for logging connecting to database, java swing framework for GUI.
+In this project I use only java as a programming language, hibernate framework for work with database postgresql, log4j for logging connection to database, java swing framework for GUI.
 
 Also, you need to make database toysdb using postgresql and create a new user in postgres-server, give him all privileges for this new db, or you can use main postgres user. After that create new table in db executing this script:
 ````
