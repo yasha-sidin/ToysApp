@@ -19,7 +19,7 @@ and you will be informed about that. Also you will be necessarily informed about
 
 ## Technologies
 
-You need to use dependencies from pom.xml in this repo and install theese tools before you run app:
+You need to use dependencies from pom.xml in this repo and install this tool before you run app:
 
 1. Postgresql
    * https://www.postgresql.org/download/
