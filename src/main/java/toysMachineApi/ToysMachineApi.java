@@ -114,6 +114,9 @@ public class ToysMachineApi {
             return "Unfortunately, you didn't win anything. Don't worry, maybe next time you will be more lucky.";
         } else {
             Toy prize = toysMap.get(selectedKey);
+            model.deleteData(prize);
+            currentProbability.setProbability(currentProbability.getValue() - prize.getProbability().getValue());
+            saveProbIntoFile();
             prizesQueue.add(prize);
             return String.format("Congratulates you! You won a prize: %s", prize.getName());
         }
@@ -130,10 +133,7 @@ public class ToysMachineApi {
     public Toy getPrizeFromQueue() throws IOException {
         Toy prize = prizesQueue.peek();
         if (prize != null) {
-            currentProbability.setProbability(currentProbability.getValue() - prize.getProbability().getValue());
-            saveProbIntoFile();
             saveToyToFile(prize);
-            model.deleteData(prize);
             prizesQueue.remove(prize);
         }
         return prize;
