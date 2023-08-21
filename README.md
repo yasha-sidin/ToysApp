@@ -26,6 +26,16 @@ You need to use dependencies from pom.xml in this repo and install this tool bef
 
 In this project I use only java as a programming language, hibernate framework, log4j for logging connecting to database, java swing framwork for GUI.
 
+Also you need to make database toysdb using postgresql and create a new user in postgres-server, give him all privileges for this new db or you can use main postgres user. After that create new table in db executing this script:
+´´´
+CREATE TABLE IF NOT EXISTS public.toysapp
+(
+    id integer NOT NULL DEFAULT nextval('toysapp_id_seq'::regclass),
+    name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    probability real NOT NULL DEFAULT 0,
+    CONSTRAINT toysapp_pkey PRIMARY KEY (id)
+)
+´´´
 ## Running
 
 
