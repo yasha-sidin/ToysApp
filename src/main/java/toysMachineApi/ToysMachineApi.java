@@ -4,7 +4,6 @@ import model.Probability;
 import model.entity.Toy;
 import model.iGetModel;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -167,13 +166,12 @@ public class ToysMachineApi {
         model.shutdownModel();
     }
 
-    public boolean setSettings(Money choiceCosts, int minAmountToys) {
+    public void setSettings(Money choiceCosts, int minAmountToys) {
         if (choiceCosts.getValue() > 1000.0) throw new RuntimeException("Cost of one choice can't be less than 1000.");
         if (minAmountToys <= 0 || minAmountToys > 30) throw new RuntimeException("Minimum amount of toys can't be less 0 or equals that and more than 30.");
         boolean result = Settings.saveSettings(choiceCosts, minAmountToys);
         choiceCost = choiceCosts;
         minAmountOfToys = minAmountToys;
-        return result;
     }
 
     public boolean setSettings(Money choiceCosts) {
@@ -203,7 +201,7 @@ public class ToysMachineApi {
         try {
             File file = new File(PATH_TOYS_CLIENT);
             if (!file.exists()) {
-                return 1;
+                return 0;
             }
             String[] strings = Files.readString(Path.of(PATH_TOYS_CLIENT)).split("\n");
             String lastRow = strings[strings.length - 1];
@@ -211,7 +209,7 @@ public class ToysMachineApi {
         } catch (Throwable ex) {
             System.err.println("Exception in finding last number of Toy from client list. Check src/main/resources/client_toys.txt. " + ex);
         }
-        return 1;
+        return 0;
     }
 
     private static Probability getProbFromFile() {

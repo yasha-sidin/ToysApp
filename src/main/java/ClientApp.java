@@ -6,6 +6,6 @@ import model.iGetModel;
 public class ClientApp {
     public static void main(String[] args) {
         iGetModel<Toy> dbModel = new DbModel();
-        ClientFrame clientFrame = new ClientFrame(dbModel);
+        new ClientFrame(dbModel);
     }
 }

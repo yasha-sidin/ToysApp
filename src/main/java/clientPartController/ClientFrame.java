@@ -122,7 +122,7 @@ public class ClientFrame extends JFrame {
                         return;
                     }
                     JOptionPane.showMessageDialog(externalPanel, String.format("<html>%s was saved into your file. " +
-                            "Push on button 'see toys' to see all your prizes for all time.</html>", toy.getName()), "Info", JOptionPane.INFORMATION_MESSAGE);
+                            "Push on button 'see prizes' to see all your prizes for all time.</html>", toy.getName()), "Info", JOptionPane.INFORMATION_MESSAGE);
                     refreshData();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(externalPanel, "<html>" + ex.getMessage() + "</html>", "Error", JOptionPane.ERROR_MESSAGE);
@@ -210,12 +210,10 @@ public class ClientFrame extends JFrame {
     private String getQueueMap() {
         fillQueueMap();
         if (queueMap.isEmpty()) {
-            System.out.println("Empty");
             return "Prizes queue: \n";
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Prizes queue: \n");
-        System.out.println(queueMap);
         for (int key : queueMap.keySet()) {
             stringBuilder.append(key).append(". ").append(queueMap.get(key).printToClient()).append("\n");
         }

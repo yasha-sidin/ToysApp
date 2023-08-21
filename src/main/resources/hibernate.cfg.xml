@@ -4,15 +4,13 @@
         "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="connection.url">jdbc:postgresql://localhost:5432/yourDataBase></property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/toysdb</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.username">yourUserName</property>
-        <property name="connection.password">yourPassword</property>
+        <property name="connection.username">youruser</property>
+        <property name="connection.password">yourpassword</property>
         <property name="hibernate.show_sql">true</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.highlight_sql">true</property>
-<!--        <property name="hibernate.use_sql_comments">true</property>-->
-<!--        <property name="hibernate.hibernate.session.events.log">true</property>-->
 
         <mapping class="model.entity.Toy"/>
 
